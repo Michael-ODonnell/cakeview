@@ -1,4 +1,4 @@
-package uk.co.roadtodawn.listview.fetch_content;
+package uk.co.roadtodawn.listview.fetch;
 
 import org.json.JSONArray;
 import org.junit.Test;
@@ -30,7 +30,7 @@ public abstract class JSONFetcherTests {
         JSONFetcher jsonFetcher = getJsonFetcher();
         setRequestSuccess(false);
         jsonFetcher.fetchJSONArray(callback);
-        verify(callback, times(1)).onFetchFailed();
+        verify(callback, times(1)).onFetchFailed(any(String.class));
     }
 
     //TODO check wrong callbacks are not called on success/failure

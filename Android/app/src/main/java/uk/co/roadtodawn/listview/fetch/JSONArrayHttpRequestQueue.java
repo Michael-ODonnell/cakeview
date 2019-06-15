@@ -1,4 +1,4 @@
-package uk.co.roadtodawn.listview.fetch_content;
+package uk.co.roadtodawn.listview.fetch;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -29,7 +29,16 @@ public class JSONArrayHttpRequestQueue implements JSONArrayHttpRequestHandler {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        callback.onFetchFailed();
+                        String reason;
+                        Throwable cause = error.getCause();
+                        if(cause != null) {
+                            reason = cause.getLocalizedMessage();
+                        }
+                        else{
+                            reason = error.getLocalizedMessage();
+                        }
+
+                        callback.onFetchFailed(reason);
                     }
                 });
         m_requestQueue.add(jsonArrayRequest);
