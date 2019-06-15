@@ -14,6 +14,7 @@ public interface ListPresenter {
     void loadItems();
     void refresh();
     void loadImage(NetworkImageView imageView, String url);
+    String getSaveState();
 
     void registerOnItemSelectedObserver(ItemSelectedObserver observer);
     void unregisterOnItemSelectedObserver(ItemSelectedObserver observer);

@@ -1,5 +1,12 @@
 package uk.co.roadtodawn.listview;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Arrays;
+import java.util.concurrent.CopyOnWriteArraySet;
+
 public class ListItem implements Comparable<ListItem> {
     private String m_title;
     private String m_imageUrl;
@@ -31,5 +38,20 @@ public class ListItem implements Comparable<ListItem> {
     @Override
     public int compareTo(ListItem listItem) {
         return getTitle().compareTo(listItem.getTitle());
+    }
+
+    public static ListItem[] parseJsonArray(JSONArray array) throws JSONException {
+        CopyOnWriteArraySet<ListItem> itemSet = new CopyOnWriteArraySet<>();
+        for(int i = 0; i < array.length(); ++i){
+            JSONObject jsonObject = array.getJSONObject(i);
+            itemSet.add(new ListItem(
+                    jsonObject.getString("title"),
+                    jsonObject.getString("image"),
+                    jsonObject.getString("desc")));
+        }
+        ListItem[] items = new ListItem[itemSet.size()];
+        itemSet.toArray(items);
+        Arrays.sort(items);
+        return items;
     }
 }

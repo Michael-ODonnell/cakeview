@@ -10,8 +10,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONArray;
-
 import uk.co.roadtodawn.listview.detailview.ListItemDetailsPresenter;
 import uk.co.roadtodawn.listview.detailview.ListItemDetailsView;
 import uk.co.roadtodawn.listview.detailview.ModalListItemDetailsPresenter;
@@ -22,18 +20,22 @@ import uk.co.roadtodawn.listview.scrolllist.ScrollListPresenter;
 
 public class MainActivity extends AppCompatActivity {
 
-    RequestQueue m_requestQueue;
-    ListPresenter m_listPresenter;
-    ListItemDetailsPresenter m_listItemDetailsPresenter;
+    private ListPresenter m_listPresenter;
+    private ListItemDetailsPresenter m_listItemDetailsPresenter;
+    @Override
+    protected void onSaveInstanceState(Bundle saveState) {
+        super.onSaveInstanceState(saveState);
+        saveState.putString("listPresenterState", m_listPresenter.getSaveState());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        m_requestQueue = Volley.newRequestQueue(this);
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
 
-        ImageLoader imageLoader = new ImageLoader(m_requestQueue,
+        ImageLoader imageLoader = new ImageLoader(requestQueue,
             new ImageLoader.ImageCache() {
                 private final LruCache<String, Bitmap>
                         cache = new LruCache<>(20);
@@ -53,15 +55,22 @@ public class MainActivity extends AppCompatActivity {
         ViewGroup main = findViewById(R.id.main);
 
         final String listUrl = getResources().getString(R.string.list_url);
-        JSONFetcher jsonFetcher = new JSONHttpFetcher(listUrl, new JSONArrayHttpRequestQueue(m_requestQueue));
+        JSONFetcher jsonFetcher = new JSONHttpFetcher(listUrl, new JSONArrayHttpRequestQueue(requestQueue));
 
         getLayoutInflater().inflate(R.layout.list, main, true);
         ListView listView = main.findViewById(R.id.scroll_list);
-        m_listPresenter = new ScrollListPresenter(listView, jsonFetcher, imageLoader);
+        if(savedInstanceState != null) {
+            m_listPresenter = new ScrollListPresenter(listView, jsonFetcher, imageLoader, savedInstanceState.getString("listPresenterState"));
+        }
+        else{
+            m_listPresenter = new ScrollListPresenter(listView, jsonFetcher, imageLoader);
+        }
 
         getLayoutInflater().inflate(R.layout.list_item_details, main, true);
         ListItemDetailsView listItemDetailsView = main.findViewById(R.id.list_item_details_modal);
         m_listItemDetailsPresenter = new ModalListItemDetailsPresenter(m_listPresenter, listItemDetailsView, imageLoader);
+
+        android.util.Log.w("MOD", "Redraw");
     }
 
     @Override

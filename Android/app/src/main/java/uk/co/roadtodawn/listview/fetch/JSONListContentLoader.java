@@ -9,14 +9,29 @@ import java.util.Arrays;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import uk.co.roadtodawn.listview.ListItem;
+import uk.co.roadtodawn.listview.scrolllist.ScrollListPresenter;
 
 public class JSONListContentLoader implements ListContentLoader {
 
+    private ScrollListPresenter.StateStore m_stateStore;
     private ArrayList<ListContentLoader.Observer> m_observers;
     private JSONFetcher m_jsonFetcher;
     private JSONFetcher.Callback m_onFetchCompleteCallback;
+    private ListItem[] m_currentContent;
 
-    public JSONListContentLoader(JSONFetcher jsonFetcher) {
+
+    public JSONListContentLoader(JSONFetcher jsonFetcher, ScrollListPresenter.StateStore stateStore) {
+        init(jsonFetcher, stateStore);
+        m_currentContent = new ListItem[0];
+    }
+
+    public JSONListContentLoader(JSONFetcher jsonFetcher, JSONArray initialState, ScrollListPresenter.StateStore stateStore) {
+        init(jsonFetcher, stateStore);
+        parseJsonArray(initialState);
+    }
+
+    private void init(JSONFetcher jsonFetcher, ScrollListPresenter.StateStore stateStore){
+        m_stateStore = stateStore;
         m_observers = new ArrayList<>();
         m_jsonFetcher = jsonFetcher;
         m_onFetchCompleteCallback = new JSONFetcher.Callback(){
@@ -35,6 +50,7 @@ public class JSONListContentLoader implements ListContentLoader {
 
     @Override
     public void loadContent() {
+        m_currentContent = new ListItem[0];
         m_jsonFetcher.fetchJSONArray(m_onFetchCompleteCallback);
     }
 
@@ -49,24 +65,16 @@ public class JSONListContentLoader implements ListContentLoader {
     }
 
     private void parseJsonArray(JSONArray array) {
-        CopyOnWriteArraySet<ListItem> items = new CopyOnWriteArraySet<>();
-        try {
-            for(int i = 0; i < array.length(); ++i){
-                JSONObject jsonObject = array.getJSONObject(i);
-                items.add(new ListItem(
-                        jsonObject.getString("title"),
-                        jsonObject.getString("image"),
-                        jsonObject.getString("desc")));
-            }
+        ListItem[] items;
+        try{
+            items = ListItem.parseJsonArray(array);
         } catch (JSONException e) {
             notifyFetchFailed("Failed to parse list");
             return;
         }
-        ListItem[] itemsArray = new ListItem[items.size()];
-        items.toArray(itemsArray);
-        Arrays.sort(itemsArray);
+        m_stateStore.persistState(array.toString());
         for(Observer observer: m_observers) {
-            observer.onContentReady(itemsArray);
+            observer.onContentReady(items);
         }
     }
 

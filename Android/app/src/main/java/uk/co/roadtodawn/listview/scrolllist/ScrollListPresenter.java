@@ -3,6 +3,9 @@ package uk.co.roadtodawn.listview.scrolllist;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.util.ArrayList;
 
 import uk.co.roadtodawn.listview.ListItem;
@@ -10,13 +13,16 @@ import uk.co.roadtodawn.listview.ListPresenter;
 import uk.co.roadtodawn.listview.ListView;
 import uk.co.roadtodawn.listview.fetch.JSONFetcher;
 import uk.co.roadtodawn.listview.fetch.JSONListContentLoader;
+import uk.co.roadtodawn.listview.fetch.JSONStringFetcher;
 import uk.co.roadtodawn.listview.fetch.ListContentLoader;
 
 public class ScrollListPresenter implements ListPresenter {
 
-    private ArrayList<ItemSelectedObserver> m_itemSelectedObservers;
+    public interface StateStore {
+        void persistState(String state);
+    }
 
-    private ListContentLoader m_listContentLoader;
+    private ArrayList<ItemSelectedObserver> m_itemSelectedObservers;
 
     private ImageLoader m_imageLoader;
 
@@ -24,13 +30,36 @@ public class ScrollListPresenter implements ListPresenter {
 
     private ListContentLoader.Observer m_contentObserver;
 
+    private String m_state;
+
+    private StateStore m_stateStore;
+
+    private ListContentLoader m_listContentLoader;
+
     public ScrollListPresenter(ListView listView,
                                JSONFetcher jsonFetcher,
                                ImageLoader imageLoader){
 
+        init(listView, imageLoader);
+
+        m_listContentLoader = new JSONListContentLoader(jsonFetcher, m_stateStore);
+        m_listContentLoader.registerListContentObserver(m_contentObserver);
+        m_listContentLoader.loadContent();
+    }
+
+    public ScrollListPresenter(ListView listView,
+                               JSONFetcher jsonFetcher,
+                               ImageLoader imageLoader,
+                               String savedState){
+        init(listView, imageLoader);
+        loadSavedState(savedState, jsonFetcher);
+    }
+
+    private void init(ListView listView,
+                      ImageLoader imageLoader) {
+
         m_imageLoader = imageLoader;
         m_itemSelectedObservers = new ArrayList<>();
-        m_listContentLoader = new JSONListContentLoader(jsonFetcher);
 
         m_listView = listView;
         m_listView.setPresenter(this);
@@ -47,9 +76,41 @@ public class ScrollListPresenter implements ListPresenter {
             }
         };
 
-        m_listContentLoader.registerListContentObserver(m_contentObserver);
+        m_state = null;
 
-        m_listContentLoader.loadContent();
+        m_stateStore = new ScrollListPresenter.StateStore() {
+            @Override
+            public void persistState(String state) {
+                m_state = state;
+            }
+        };
+    }
+
+    private void loadSavedState(final String savedState, final JSONFetcher jsonFetcher){
+
+        JSONStringFetcher stringFetcher = new JSONStringFetcher(savedState);
+        stringFetcher.fetchJSONArray(new JSONFetcher.Callback() {
+            @Override
+            public void onJSONArrayFetched(JSONArray array) {
+                m_listContentLoader = new JSONListContentLoader(jsonFetcher, array, m_stateStore);
+                m_listContentLoader.registerListContentObserver(m_contentObserver);
+                m_state = array.toString();
+                try{
+                    m_listView.displayList(ListItem.parseJsonArray(array));
+                } catch (JSONException e) {
+                    //TODO inject string lookup abstraction
+                    m_listView.displayLoadFailedError("Failed to parse saved list");
+                }
+            }
+
+            @Override
+            public void onFetchFailed(String reason) {
+                m_listView.displayLoadFailedError(reason);
+                m_listContentLoader = new JSONListContentLoader(jsonFetcher, m_stateStore);
+                m_listContentLoader.registerListContentObserver(m_contentObserver);
+                m_listContentLoader.loadContent();
+            }
+        });
     }
 
     @Override
@@ -78,6 +139,11 @@ public class ScrollListPresenter implements ListPresenter {
     @Override
     public void loadImage(NetworkImageView imageView, String url) {
         imageView.setImageUrl(url, m_imageLoader);
+    }
+
+    @Override
+    public String getSaveState() {
+        return m_state;
     }
 
     @Override
