@@ -25,7 +25,10 @@ public abstract class ListPresenterTests {
         verify(observer, times(1)).onItemSelected(item);
     }
 
-    //TODO test unregister callbacks
+    //TODO test unregister callbacks work as expected
+
+    //TODO test successful ListPresenter.loadItems triggers ListView.displayList
+    //TODO test successful ListPresenter.refresh triggers ListView.displayList
 
     //endregion
 }

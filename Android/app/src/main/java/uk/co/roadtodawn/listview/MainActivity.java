@@ -12,6 +12,9 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 
+import uk.co.roadtodawn.listview.detailview.ListItemDetailsPresenter;
+import uk.co.roadtodawn.listview.detailview.ListItemDetailsView;
+import uk.co.roadtodawn.listview.detailview.ModalListItemDetailsPresenter;
 import uk.co.roadtodawn.listview.fetch.JSONArrayHttpRequestQueue;
 import uk.co.roadtodawn.listview.fetch.JSONFetcher;
 import uk.co.roadtodawn.listview.fetch.JSONHttpFetcher;
@@ -21,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
 
     RequestQueue m_requestQueue;
     ListPresenter m_listPresenter;
+    ListItemDetailsPresenter m_listItemDetailsPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         ImageLoader imageLoader = new ImageLoader(m_requestQueue,
             new ImageLoader.ImageCache() {
                 private final LruCache<String, Bitmap>
-                        cache = new LruCache<String, Bitmap>(20);
+                        cache = new LruCache<>(20);
 
                 @Override
                 public Bitmap getBitmap(String url) {
@@ -65,11 +69,16 @@ public class MainActivity extends AppCompatActivity {
         getLayoutInflater().inflate(R.layout.list, main, true);
         ListView listView = main.findViewById(R.id.scroll_list);
         m_listPresenter = new ScrollListPresenter(listView, jsonFetcher, imageLoader);
+
+        getLayoutInflater().inflate(R.layout.list_item_details, main, true);
+        ListItemDetailsView listItemDetailsView = main.findViewById(R.id.list_item_details_modal);
+        m_listItemDetailsPresenter = new ModalListItemDetailsPresenter(m_listPresenter, listItemDetailsView, imageLoader);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        m_listItemDetailsPresenter.destroy();
         m_listPresenter.destroy();
     }
 }
