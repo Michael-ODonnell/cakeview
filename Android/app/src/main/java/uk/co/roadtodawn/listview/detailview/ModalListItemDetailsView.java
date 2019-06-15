@@ -4,6 +4,8 @@ import android.content.Context;
 import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.NetworkImageView;
@@ -69,15 +71,28 @@ public class ModalListItemDetailsView extends ConstraintLayout implements ListIt
     }
 
     @Override
-    public void dismiss(){
-        fadeOut();
+    public void dismiss(boolean animate){
+        if(animate) {
+            fadeOut();
+        }
+        else{
+            setVisibility(GONE);
+            setAlpha(0.0f);
+        }
     }
 
     private void fadeIn() {
         setVisibility(VISIBLE);
+
+        animate().alpha(1.0f);
     }
 
     private void fadeOut() {
-        setVisibility(GONE);
+        animate().alpha(0.0f).withEndAction(new Runnable() {
+            @Override
+            public void run() {
+                setVisibility(GONE);
+            }
+        });
     }
 }

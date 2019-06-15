@@ -14,17 +14,28 @@ public class ModalListItemDetailsPresenter implements ListItemDetailsPresenter {
     private ListPresenter m_listPresenter;
     private ListPresenter.ItemSelectedObserver m_itemSelectedObserver;
 
+    private OnDismissedCallback m_OnDismissedCallback;
+
     public ModalListItemDetailsPresenter(ListPresenter listPresenter, ListItemDetailsView listItemDetailsView, ImageLoader imageLoader){
         m_listItemDetailsView = listItemDetailsView;
         m_imageLoader = imageLoader;
         m_listItemDetailsView.setPresenter(this);
-        m_listItemDetailsView.dismiss();
+        boolean animateDismissal = false;
+        m_listItemDetailsView.dismiss(animateDismissal);
         m_listPresenter = listPresenter;
 
         m_itemSelectedObserver = new ListPresenter.ItemSelectedObserver() {
             @Override
             public void onItemSelected(ListItem item) {
                 display(item);
+            }
+        };
+
+        m_OnDismissedCallback = new OnDismissedCallback() {
+            @Override
+            public void onDismissed() {
+                boolean animate = true;
+                m_listItemDetailsView.dismiss(animate);
             }
         };
 
@@ -38,12 +49,7 @@ public class ModalListItemDetailsPresenter implements ListItemDetailsPresenter {
 
     @Override
     public void display(ListItem item) {
-        m_listItemDetailsView.displayItem(item, new OnDismissedCallback() {
-            @Override
-            public void onDismissed() {
-                m_listItemDetailsView.dismiss();
-            }
-        });
+        m_listItemDetailsView.displayItem(item, m_OnDismissedCallback);
     }
 
     @Override

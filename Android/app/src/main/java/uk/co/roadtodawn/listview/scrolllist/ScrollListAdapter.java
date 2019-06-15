@@ -6,8 +6,6 @@ import android.support.v7.util.DiffUtil;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 
 import uk.co.roadtodawn.listview.ListItem;
 import uk.co.roadtodawn.listview.ListPresenter;
@@ -61,9 +59,6 @@ class ScrollListAdapter extends ListAdapter<ListItem, ListItemViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ListItemViewHolder listItemViewHolder, int i) {
         listItemViewHolder.bind(m_items[i]);
-
-        Animation animation = AnimationUtils.loadAnimation(m_inflater.getContext(), android.R.anim.slide_in_left);
-        listItemViewHolder.itemView.startAnimation(animation);
     }
 
     @Override

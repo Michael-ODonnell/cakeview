@@ -4,6 +4,6 @@ import uk.co.roadtodawn.listview.ListItem;
 
 public interface ListItemDetailsView {
     void displayItem(ListItem item, ListItemDetailsPresenter.OnDismissedCallback onDismissed);
-    void dismiss();
+    void dismiss(boolean animate);
     void setPresenter(ListItemDetailsPresenter presenter);
 }

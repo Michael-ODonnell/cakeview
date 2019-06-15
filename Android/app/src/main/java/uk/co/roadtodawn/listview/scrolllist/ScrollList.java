@@ -16,34 +16,33 @@ import uk.co.roadtodawn.listview.R;
 
 public class ScrollList extends ConstraintLayout implements ListView {
 
-    private Context m_context;
-    private ScrollListAdapter m_ScrollListAdapter;
-    SwipeRefreshLayout m_refreshLayout;
+    private ScrollListAdapter m_scrollListAdapter;
+    private SwipeRefreshLayout m_refreshLayout;
+    private RecyclerView m_recyclerView;
+
     public ScrollList(Context context) {
         super(context);
-        m_context = context;
     }
 
     public ScrollList(Context context, AttributeSet attrs) {
         super(context, attrs);
-        m_context = context;
     }
 
     public ScrollList(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        m_context = context;
     }
 
     @Override
     public void setPresenter(final ListPresenter presenter) {
-        m_ScrollListAdapter = new ScrollListAdapter(
-            (LayoutInflater)m_context.getSystemService(Context.LAYOUT_INFLATER_SERVICE),
+        m_scrollListAdapter = new ScrollListAdapter(
+            (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE),
             presenter
         );
 
-        RecyclerView recyclerView = findViewById(R.id.recycler_view);
-        recyclerView.setAdapter(m_ScrollListAdapter);
-        recyclerView.addItemDecoration(new DividerItemDecoration(m_context, DividerItemDecoration.VERTICAL));
+        m_recyclerView = findViewById(R.id.recycler_view);
+        m_recyclerView.setAdapter(m_scrollListAdapter);
+        m_recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+        m_recyclerView.scheduleLayoutAnimation();
 
         m_refreshLayout = findViewById(R.id.swipeRefreshLayout);
         m_refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -56,14 +55,15 @@ public class ScrollList extends ConstraintLayout implements ListView {
 
     @Override
     public void displayList(ListItem[] items) {
-        m_ScrollListAdapter.displayList(items);
         m_refreshLayout.setRefreshing(false);
+        m_recyclerView.scheduleLayoutAnimation();
+        m_scrollListAdapter.displayList(items);
     }
 
     @Override
     public void displayLoadFailedError() {
         String message = getResources().getString(R.string.error_message);
-        Toast.makeText(m_context, message, Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
         m_refreshLayout.setRefreshing(false);
     }
 }
