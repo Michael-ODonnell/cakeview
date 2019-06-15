@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">ListView</string>
+    <string name="app_name">Cake View</string>
+    <string name="list_url">https://local.roadtodawn.co.uk/cakelist/cakelist.json</string>
 </resources>
