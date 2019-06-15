@@ -15,6 +15,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-            android:layoutAnimation="@anim/layout_fall_down" />
+            android:layoutAnimation="@anim/layout_fall_down"/>
     </android.support.v4.widget.SwipeRefreshLayout>
 </uk.co.roadtodawn.listview.scrolllist.ScrollList>
