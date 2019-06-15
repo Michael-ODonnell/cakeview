@@ -61,9 +61,11 @@ public class ScrollList extends ConstraintLayout implements ListView {
     }
 
     @Override
-    public void displayLoadFailedError() {
-        String message = getResources().getString(R.string.error_message);
-        Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
+    public void displayLoadFailedError(String reason) {
+        if(reason == null) {
+            reason = getResources().getString(R.string.error_message);
+        }
+        Toast.makeText(getContext(), reason, Toast.LENGTH_LONG).show();
         m_refreshLayout.setRefreshing(false);
     }
 }

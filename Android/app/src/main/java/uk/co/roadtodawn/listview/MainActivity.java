@@ -54,17 +54,6 @@ public class MainActivity extends AppCompatActivity {
 
         final String listUrl = getResources().getString(R.string.list_url);
         JSONFetcher jsonFetcher = new JSONHttpFetcher(listUrl, new JSONArrayHttpRequestQueue(m_requestQueue));
-        jsonFetcher.fetchJSONArray(new JSONFetcher.Callback() {
-            @Override
-            public void onJSONArrayFetched(JSONArray array) {
-                android.util.Log.v("JSON", array.toString());
-            }
-
-            @Override
-            public void onFetchFailed() {
-                android.util.Log.v("JSON", "Fetch from listUrl failed");
-            }
-        });
 
         getLayoutInflater().inflate(R.layout.list, main, true);
         ListView listView = main.findViewById(R.id.scroll_list);

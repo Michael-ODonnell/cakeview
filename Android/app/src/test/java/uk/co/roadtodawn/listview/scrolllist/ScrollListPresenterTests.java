@@ -119,13 +119,13 @@ public class ScrollListPresenterTests extends ListPresenterTests {
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 JSONFetcher.Callback callback = invocation.getArgument(0);
-                callback.onFetchFailed();
+                callback.onFetchFailed("Failure was inevitable");
                 return null;
             }
         }).when(jsonFetcher).fetchJSONArray(any(JSONFetcher.Callback.class));
 
         ListPresenter presenter = new ScrollListPresenter(listView, jsonFetcher, imageLoader);
 
-        verify(listView, times(1)).displayLoadFailedError();
+        verify(listView, times(1)).displayLoadFailedError(any(String.class));
     }
 }

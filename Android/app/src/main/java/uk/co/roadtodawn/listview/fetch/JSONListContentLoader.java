@@ -27,8 +27,8 @@ public class JSONListContentLoader implements ListContentLoader {
             }
 
             @Override
-            public void onFetchFailed() {
-                notifyFetchFailed();
+            public void onFetchFailed(String reason) {
+                notifyFetchFailed(reason);
             }
         };
     }
@@ -59,7 +59,7 @@ public class JSONListContentLoader implements ListContentLoader {
                         jsonObject.getString("desc")));
             }
         } catch (JSONException e) {
-            notifyFetchFailed();
+            notifyFetchFailed("Failed to parse list");
             return;
         }
         ListItem[] itemsArray = new ListItem[items.size()];
@@ -70,9 +70,9 @@ public class JSONListContentLoader implements ListContentLoader {
         }
     }
 
-    private void notifyFetchFailed() {
+    private void notifyFetchFailed(String reason) {
         for(Observer observer: m_observers) {
-            observer.onLoadFailed();
+            observer.onLoadFailed(reason);
         }
     }
 }

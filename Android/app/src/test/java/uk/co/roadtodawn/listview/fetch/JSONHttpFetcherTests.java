@@ -24,7 +24,7 @@ public class JSONHttpFetcherTests extends JSONFetcherTests {
                     callback.onJSONArrayFetched(new JSONArray());
                 }
                 else{
-                    callback.onFetchFailed();
+                    callback.onFetchFailed("Failure was inevitable");
                 }
                 return null;
             }

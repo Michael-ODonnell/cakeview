@@ -5,7 +5,7 @@ import uk.co.roadtodawn.listview.ListItem;
 public interface ListContentLoader {
     interface Observer {
         void onContentReady(ListItem[] content);
-        void onLoadFailed();
+        void onLoadFailed(String reason);
     }
 
     void loadContent();

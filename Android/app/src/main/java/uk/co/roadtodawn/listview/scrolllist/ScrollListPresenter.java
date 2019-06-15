@@ -42,8 +42,8 @@ public class ScrollListPresenter implements ListPresenter {
             }
 
             @Override
-            public void onLoadFailed() {
-                m_listView.displayLoadFailedError();
+            public void onLoadFailed(String reason) {
+                m_listView.displayLoadFailedError(reason);
             }
         };
 
