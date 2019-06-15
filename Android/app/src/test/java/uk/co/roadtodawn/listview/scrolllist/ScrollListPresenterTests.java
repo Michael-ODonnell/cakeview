@@ -18,6 +18,7 @@ import uk.co.roadtodawn.listview.ListPresenter;
 import uk.co.roadtodawn.listview.ListView;
 import uk.co.roadtodawn.listview.fetch.JSONFetcher;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
@@ -55,7 +56,6 @@ public class ScrollListPresenterTests extends ListPresenterTests {
 
         return new JSONArray();
     }
-
 
     @Test
     public void startup_LoadSuccess_TellViewToDisplayList()
@@ -107,6 +107,33 @@ public class ScrollListPresenterTests extends ListPresenterTests {
 
         ListPresenter presenter = new ScrollListPresenter(listView, jsonFetcher, imageLoader);
         verify(listView, times(1)).displayList(any(ListItem[].class));
+    }
+
+
+    @Test
+    public void startup_LoadSuccess_DuplicatesRemoved()
+    {
+        ListView listView = mock(ListView.class);
+        JSONFetcher jsonFetcher = mock(JSONFetcher.class);
+        ImageLoader imageLoader = mock(ImageLoader.class);
+
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                JSONFetcher.Callback callback = invocation.getArgument(0);
+                callback.onJSONArrayFetched(getTestData("duplicatesList.json"));
+                return null;
+            }
+        }).when(jsonFetcher).fetchJSONArray(any(JSONFetcher.Callback.class));
+
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                ListItem[] items = invocation.getArgument(0);
+                assertEquals(1, items.length);
+                return null;
+            }
+        }).when(listView).displayList(any(ListItem[].class));
+
+        ListPresenter presenter = new ScrollListPresenter(listView, jsonFetcher, imageLoader);
     }
 
     @Test
