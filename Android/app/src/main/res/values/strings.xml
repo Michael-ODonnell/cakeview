@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Cake View</string>
     <string name="list_url">https://local.roadtodawn.co.uk/cakelist/cakelist.json</string>
+    <string name="list_item_placeholder_title">Title</string>
+    <string name="list_item_placeholder_description">Description</string>
+    <string name="error_message">Load Failed</string>
 </resources>

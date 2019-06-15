@@ -1,4 +1,4 @@
-package uk.co.roadtodawn.listview.fetch_content;
+package uk.co.roadtodawn.listview.fetch;
 
 import org.json.JSONArray;
 import org.junit.Test;

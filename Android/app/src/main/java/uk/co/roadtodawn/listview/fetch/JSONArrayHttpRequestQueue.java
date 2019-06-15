@@ -1,4 +1,4 @@
-package uk.co.roadtodawn.listview.fetch_content;
+package uk.co.roadtodawn.listview.fetch;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
