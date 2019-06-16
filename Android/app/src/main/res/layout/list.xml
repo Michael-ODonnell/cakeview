@@ -6,24 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.constraint.ConstraintLayout
+    <ImageButton
         android:id="@+id/refresh_button"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ImageView
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@android:color/white"
-            android:contentDescription="@string/refresh_button_description"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.25"
-            app:srcCompat="@drawable/refresh_48" />
-
-    </android.support.constraint.ConstraintLayout>
+        android:layout_height="match_parent"
+        android:contentDescription="@string/refresh_button_description"
+        android:background="@drawable/refresh_button_selector"
+        app:srcCompat="@drawable/refresh_48" />
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
