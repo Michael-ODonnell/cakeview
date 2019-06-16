@@ -5,4 +5,5 @@
     <color name="colorAccent">#D81B60</color>
     <color name="colorModalBackground">#44000000</color>
     <color name="colorRefreshButtonDownState">#f0f0f0</color>
+    <color name="colorListViewSelected">#bdf1ee</color>
 </resources>

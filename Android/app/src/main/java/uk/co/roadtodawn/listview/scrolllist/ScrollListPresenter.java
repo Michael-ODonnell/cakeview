@@ -120,7 +120,6 @@ public class ScrollListPresenter implements ListPresenter {
 
     @Override
     public void selectItem(ListItem item) {
-        //TODO visual styling to indicate item has been selected
         for(ItemSelectedObserver observer : m_itemSelectedObservers) {
             observer.onItemSelected(item);
         }

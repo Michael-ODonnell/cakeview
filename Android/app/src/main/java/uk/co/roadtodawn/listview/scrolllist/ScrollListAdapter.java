@@ -30,6 +30,7 @@ class ScrollListAdapter extends ListAdapter<ListItem, ListItemViewHolder> {
     private LayoutInflater m_inflater;
     private ListItem[] m_items;
     private ListPresenter m_listPresenter;
+    private int m_selected;
 
     ScrollListAdapter(LayoutInflater inflater,
                       ListPresenter presenter
@@ -38,6 +39,7 @@ class ScrollListAdapter extends ListAdapter<ListItem, ListItemViewHolder> {
         m_items = new ListItem[0];
         m_inflater = inflater;
         m_listPresenter = presenter;
+        m_selected = -1;
     }
 
     @NonNull
@@ -51,6 +53,9 @@ class ScrollListAdapter extends ListAdapter<ListItem, ListItemViewHolder> {
             @Override
             public void onClick(View view) {
                 m_listPresenter.selectItem(viewHolder.getItem());
+                notifyItemChanged(m_selected);
+                m_selected = viewHolder.getLayoutPosition();
+                notifyItemChanged(m_selected);
             }
         });
         return viewHolder;
@@ -58,7 +63,7 @@ class ScrollListAdapter extends ListAdapter<ListItem, ListItemViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ListItemViewHolder listItemViewHolder, int i) {
-        listItemViewHolder.bind(m_items[i]);
+        listItemViewHolder.bind(m_items[i], m_selected == i);
     }
 
     @Override
@@ -67,6 +72,7 @@ class ScrollListAdapter extends ListAdapter<ListItem, ListItemViewHolder> {
     }
 
     void displayList(ListItem[] items) {
+        m_selected = -1;
         m_items = items;
         notifyDataSetChanged();
     }

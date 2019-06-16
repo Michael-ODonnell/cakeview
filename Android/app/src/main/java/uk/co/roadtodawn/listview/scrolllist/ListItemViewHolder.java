@@ -27,7 +27,8 @@ class ListItemViewHolder extends RecyclerView.ViewHolder {
         m_listPresenter = listPresenter;
     }
 
-    void bind(ListItem item) {
+    void bind(ListItem item, boolean selected) {
+        itemView.setSelected(selected);
         m_currentItem = item;
         m_textView.setText(item.getTitle());
         m_listPresenter.loadImage(m_imageView, item.getImageUrl());
