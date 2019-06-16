@@ -22,10 +22,13 @@ public class MainActivity extends AppCompatActivity {
 
     private ListPresenter m_listPresenter;
     private ListItemDetailsPresenter m_listItemDetailsPresenter;
+
+    private final String ListPresenterStateKey = "listPresenterState";
+
     @Override
     protected void onSaveInstanceState(Bundle saveState) {
         super.onSaveInstanceState(saveState);
-        saveState.putString("listPresenterState", m_listPresenter.getSaveState());
+        saveState.putString(ListPresenterStateKey, m_listPresenter.getSaveState());
     }
 
     @Override
@@ -59,8 +62,8 @@ public class MainActivity extends AppCompatActivity {
 
         getLayoutInflater().inflate(R.layout.list, main, true);
         ListView listView = main.findViewById(R.id.scroll_list);
-        if(savedInstanceState != null) {
-            m_listPresenter = new ScrollListPresenter(listView, jsonFetcher, imageLoader, savedInstanceState.getString("listPresenterState"));
+        if(hasSavedState(savedInstanceState)) {
+            m_listPresenter = new ScrollListPresenter(listView, jsonFetcher, imageLoader, savedInstanceState.getString(ListPresenterStateKey));
         }
         else{
             m_listPresenter = new ScrollListPresenter(listView, jsonFetcher, imageLoader);
@@ -71,6 +74,12 @@ public class MainActivity extends AppCompatActivity {
         m_listItemDetailsPresenter = new ModalListItemDetailsPresenter(m_listPresenter, listItemDetailsView, imageLoader);
 
         android.util.Log.w("MOD", "Redraw");
+    }
+
+    private boolean hasSavedState(Bundle savedInstanceState ){
+        return (savedInstanceState != null &&
+                savedInstanceState.containsKey(ListPresenterStateKey) &&
+                savedInstanceState.getString(ListPresenterStateKey) != null);
     }
 
     @Override

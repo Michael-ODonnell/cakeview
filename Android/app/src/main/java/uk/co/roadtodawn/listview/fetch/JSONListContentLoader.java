@@ -2,11 +2,8 @@ package uk.co.roadtodawn.listview.fetch;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import uk.co.roadtodawn.listview.ListItem;
 import uk.co.roadtodawn.listview.scrolllist.ScrollListPresenter;
@@ -17,12 +14,9 @@ public class JSONListContentLoader implements ListContentLoader {
     private ArrayList<ListContentLoader.Observer> m_observers;
     private JSONFetcher m_jsonFetcher;
     private JSONFetcher.Callback m_onFetchCompleteCallback;
-    private ListItem[] m_currentContent;
-
 
     public JSONListContentLoader(JSONFetcher jsonFetcher, ScrollListPresenter.StateStore stateStore) {
         init(jsonFetcher, stateStore);
-        m_currentContent = new ListItem[0];
     }
 
     public JSONListContentLoader(JSONFetcher jsonFetcher, JSONArray initialState, ScrollListPresenter.StateStore stateStore) {
@@ -50,7 +44,6 @@ public class JSONListContentLoader implements ListContentLoader {
 
     @Override
     public void loadContent() {
-        m_currentContent = new ListItem[0];
         m_jsonFetcher.fetchJSONArray(m_onFetchCompleteCallback);
     }
 
