@@ -72,8 +72,6 @@ public class MainActivity extends AppCompatActivity {
         getLayoutInflater().inflate(R.layout.list_item_details, main, true);
         ListItemDetailsView listItemDetailsView = main.findViewById(R.id.list_item_details_modal);
         m_listItemDetailsPresenter = new ModalListItemDetailsPresenter(m_listPresenter, listItemDetailsView, imageLoader);
-
-        android.util.Log.w("MOD", "Redraw");
     }
 
     private boolean hasSavedState(Bundle savedInstanceState ){
