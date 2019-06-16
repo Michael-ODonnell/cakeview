@@ -10,3 +10,6 @@ Android Studio
 3. Open the Android folder containing the gradle project
 
 ## Targets Android 23 (Marshmallow) and above.
+
+## Attribution
+["Cupcake SVG Vector"](https://www.svgrepo.com/svg/475/cupcake) by svgrepo is licensed under CC BY 4.0 / Converted to xml
