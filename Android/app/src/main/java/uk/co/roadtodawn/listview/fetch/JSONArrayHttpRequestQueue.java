@@ -41,6 +41,7 @@ public class JSONArrayHttpRequestQueue implements JSONArrayHttpRequestHandler {
                         callback.onFetchFailed(reason);
                     }
                 });
+        jsonArrayRequest.setShouldCache(false);
         m_requestQueue.add(jsonArrayRequest);
     }
 }
