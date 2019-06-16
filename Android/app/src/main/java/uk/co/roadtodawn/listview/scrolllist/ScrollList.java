@@ -7,6 +7,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Toast;
 
 import uk.co.roadtodawn.listview.ListItem;
@@ -19,6 +20,7 @@ public class ScrollList extends ConstraintLayout implements ListView {
     private ScrollListAdapter m_scrollListAdapter;
     private SwipeRefreshLayout m_refreshLayout;
     private RecyclerView m_recyclerView;
+    private View m_refreshButton;
 
     public ScrollList(Context context) {
         super(context);
@@ -51,6 +53,23 @@ public class ScrollList extends ConstraintLayout implements ListView {
                 presenter.refresh();
             }
         });
+
+        m_refreshButton = findViewById(R.id.refresh_button);
+        m_refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.refresh();
+                m_refreshLayout.setRefreshing(true);
+            }
+        });
+        m_refreshButton.setVisibility(GONE);
+    }
+
+    @Override
+    public void clear() {
+        m_scrollListAdapter.displayList(new ListItem[0]);
+        m_recyclerView.setVisibility(GONE);
+        m_refreshLayout.setVisibility(VISIBLE);
     }
 
     @Override
@@ -58,6 +77,9 @@ public class ScrollList extends ConstraintLayout implements ListView {
         m_refreshLayout.setRefreshing(false);
         m_recyclerView.scheduleLayoutAnimation();
         m_scrollListAdapter.displayList(items);
+        m_refreshButton.setVisibility(GONE);
+        m_recyclerView.setVisibility(VISIBLE);
+        m_refreshLayout.setVisibility(VISIBLE);
     }
 
     @Override
@@ -67,5 +89,8 @@ public class ScrollList extends ConstraintLayout implements ListView {
         }
         Toast.makeText(getContext(), reason, Toast.LENGTH_LONG).show();
         m_refreshLayout.setRefreshing(false);
+        m_refreshButton.setVisibility(VISIBLE);
+        m_recyclerView.setVisibility(GONE);
+        m_refreshLayout.setVisibility(GONE);
     }
 }

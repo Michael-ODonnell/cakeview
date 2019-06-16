@@ -4,4 +4,5 @@
     <string name="list_item_placeholder_title">Title</string>
     <string name="list_item_placeholder_description">Description</string>
     <string name="error_message">Load Failed</string>
+    <string name="refresh_button_description">Refresh</string>
 </resources>

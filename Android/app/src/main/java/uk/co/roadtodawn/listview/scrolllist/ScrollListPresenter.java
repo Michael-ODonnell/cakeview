@@ -132,7 +132,7 @@ public class ScrollListPresenter implements ListPresenter {
 
     @Override
     public void refresh() {
-        m_listView.displayList(new ListItem[0]);
+        m_listView.clear();
         loadItems();
     }
 
